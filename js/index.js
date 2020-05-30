@@ -2,12 +2,16 @@
 import "@babel/polyfill";
 
 import {Map, View} from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import GeoJSON from 'ol/format/GeoJSON';
 import {get as getProjection} from 'ol/proj';
 import {WMTS} from 'ol/source';
 import {default as WMTSTileGrid} from 'ol/tilegrid/WMTS';
 import {Tile} from 'ol/layer';
+import Style from 'ol/style/Style';
+import Fill from 'ol/style/Fill';
+import Stroke from 'ol/style/Stroke';
 
 import $ from "jquery";
 
@@ -15,6 +19,25 @@ require('./index.css')
 
 $(document).ready(() => {
     console.log('ready...');
+
+    const defaultStyle = new Style({
+        fill: new Fill({
+            color: 'rgba(255, 255, 255, 0.0)'
+        }),
+        stroke: new Stroke({
+            color: 'rgba(33,33,33, 0.8)',
+            width: 1
+        })
+    });
+    const highlightStyle = new Style({
+      fill: new Fill({
+        color: 'rgba(215, 25, 28, 0.7)'
+      }),
+      stroke: new Stroke({
+        color: 'rgba(33,33,33, 0.8)',
+        width: 1
+      })
+    });
 
     const map = new Map({
       view: new View({
@@ -60,4 +83,34 @@ $(document).ready(() => {
 
     map.addLayer(layer);
 
+    const vectorlayer = new VectorLayer({
+      source: new VectorSource({
+        format: new GeoJSON(),
+        url: './mapdata/countries.geojson'
+      }),
+      style: defaultStyle
+    })
+
+    map.addLayer(vectorlayer);
+
+    let selected = null;
+    map.on('pointermove', function(e) {
+        console.log('move', selected);
+      if (selected !== null) {
+          selected.setStyle(defaultStyle);
+          selected = null;
+      }
+      map.forEachFeatureAtPixel(e.pixel, function(f) {
+          console.log()
+          selected = f;
+          f.setStyle(highlightStyle);
+          return true;
+      });
+
+      if (selected) {
+        // status.innerHTML = '&nbsp;Hovering: ' + selected.get('name');
+      } else {
+        // status.innerHTML = '&nbsp;';
+      }
+    });
 });
