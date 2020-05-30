@@ -7,4 +7,4 @@ modules/google_analytics.R
 www/bundle.css
 www/bundle.js
 www/custom.css
-resources/countries.json
+resources/countries.geojson
