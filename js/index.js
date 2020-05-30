@@ -93,6 +93,7 @@ $(document).ready(() => {
 
     map.addLayer(vectorlayer);
 
+    let selectedName = null;
     let selected = null;
     map.on('pointermove', function(e) {
         console.log('move', selected);
@@ -108,9 +109,13 @@ $(document).ready(() => {
       });
 
       if (selected) {
-        // status.innerHTML = '&nbsp;Hovering: ' + selected.get('name');
+          let newName = selected.get('name');
+          if (newName !== selectedName) {
+              Shiny.onInputChange('hoverCountry', newName);
+              selectedName = newName;
+          }
       } else {
-        // status.innerHTML = '&nbsp;';
+          selectedName = '';
       }
     });
 });
