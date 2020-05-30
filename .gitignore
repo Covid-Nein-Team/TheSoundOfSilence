@@ -12,3 +12,6 @@ SHINYAPPS_SECRET.R
 
 # folders
 rsconnect/*
+
+# js
+www/*.js.tmp-browserify-*

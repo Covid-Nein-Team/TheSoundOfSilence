@@ -44,7 +44,9 @@ dash_body <- dashboardBody(
         ),
       )
     )
-  )
+  ),
+
+  tags$script(src = "bundle.js", type="text/javascript"),
 )
 
 # The UI main function
