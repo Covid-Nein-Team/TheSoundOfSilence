@@ -14,7 +14,7 @@ from tqdm import tqdm
 # The matching from MOPPIT geolocations to countries is performed using an
 # auxiliary geojson file.
 
-GEOJSON_FILE = '../resources/countries.json'
+GEOJSON_FILE = '../resources/countries.geojson'
 OUT_FILE = 'mopitt_data.csv'
 
 date_pattern = re.compile('(20\d{2})(\d{2})(\d{2})')
@@ -65,7 +65,7 @@ for he5_file in he5_files:
     country_to_value = {}
     country_to_count = {}
 
-    with h5py.File('MOP03J-20191201-L3V5.6.3.he5', 'r') as f:
+    with h5py.File(he5_file, 'r') as f:
         # retrieve longitudes and latitudes for the grid
         lons = f['HDFEOS']['GRIDS']['MOP03']['Data Fields']['Longitude']
         lats = f['HDFEOS']['GRIDS']['MOP03']['Data Fields']['Latitude']
@@ -77,6 +77,7 @@ for he5_file in he5_files:
             for j in range(len(lats)):
                 point = Point(lons[i], lats[j])
                 matched_country = None
+                # exclude invalid values (-9999)
                 if CO[i][j] < -1000:
                     continue
                 # check first if we are in the same country as before
@@ -113,9 +114,6 @@ for he5_file in he5_files:
 
     # append to output
     out_data.append(country_to_value)
-
-    # TODO REMOVE break for testing
-    break
 
 # create a sorted list of countries
 countries = list(sorted(country_to_polygons.keys()))
