@@ -2,7 +2,7 @@
 # Created by: Covid Nein Team
 PORT ?= 8080
 
-.PHONY: help run debug env-production env-development dev-create-test test
+.PHONY: help run debug env-production env-development env-npm dev-create-test test
 
 help:
 	@echo
@@ -17,6 +17,7 @@ help:
 	@echo "  test-interactive  run the tests interactively"
 	@echo "  env-production    setup the conda environment"
 	@echo "  env-development   setup the conda dev environment"
+	@echo "  env-npm           setup js build env"
 	@echo "  dev-create-test   create a new shinytest test"
 	@echo
 
@@ -46,6 +47,10 @@ env-production:
 
 env-development: env-production
 	conda env update -f=environment-dev.yml -n spaceapps2020
+
+env-npm:
+	npm install
+	npm run build
 
 dev-create-test: export R_BROWSER = 'xdg-open'
 dev-create-test:
