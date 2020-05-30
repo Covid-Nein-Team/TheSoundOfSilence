@@ -1,0 +1,10 @@
+name: spaceapps2020
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  # extra dev packages
+  - r-shinytest
+  - r-rsconnect

@@ -1,0 +1,9 @@
+
+a.item[data-toggle=tab] {
+   transition: color 0.5s;
+}
+
+a.item-disabled[data-toggle=tab] {
+    pointer-events: none;
+    color: red !important;
+}

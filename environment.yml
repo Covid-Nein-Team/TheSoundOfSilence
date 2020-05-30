@@ -1,0 +1,20 @@
+name: spaceapps2020
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  # base r environment
+  - r-base=4.0
+  - r-essentials=4.0  # this includes the tidyverse
+
+  # extra packages
+  - r-dt  # R to js DataTables
+  - r-here
+
+  # shiny
+  - r-shiny
+  - r-shinydashboard
+  - r-shinycssloaders
+  - r-shinyjs
