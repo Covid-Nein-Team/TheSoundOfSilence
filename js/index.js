@@ -17,6 +17,65 @@ import $ from "jquery";
 
 require('./index.css')
 
+
+class AudioLooper {
+
+    constructor(audioPath = 'mapdata/audio') {
+        this.audioPath = audioPath;
+        this.currentCountry = null;
+        this.currentPosition = 0.0;
+        this.audio = null;
+
+        // test
+        this.testFiles = [
+            'accordeon_usa.ogg',
+            'kalimba_ger.ogg',
+            'new_age_ger.ogg',
+            'tubular_bells_usa.ogg'
+        ]
+        this.testIdx = 0;
+    }
+
+    setCountry(country) {
+        if (country === this.currentCountry) {
+            if (this.audio !== null) {
+                this.audio.play();
+            }
+            return;
+        }
+        if (country === null) {
+            this.currentCountry = null;
+            if (this.audio !== null) {
+                this.audio.pause();
+            }
+            return;
+        }
+        if (this.audio !== null) {
+            this.audio.pause();
+        }
+        this.audio = new Audio(this.getAudioPath(country));
+        this.audio.loop = true;
+        this.audio.currentTime = this.currentPosition;
+        this.audio.play();
+        this.audio.addEventListener("timeupdate", () => {
+            this.currentPosition = this.audio.currentTime;
+        });
+    }
+
+    getAudioPath(country) {
+        let idx = this.testIdx;
+        this.testIdx = (idx + 1) % this.testFiles.length;
+        return this.audioPath + '/' + this.testFiles[idx];
+    }
+
+    pause() {
+        if (this.audio) {
+            this.audio.pause();
+        }
+    }
+}
+
+
 $(document).ready(() => {
     console.log('ready...');
 
@@ -93,6 +152,9 @@ $(document).ready(() => {
 
     map.addLayer(vectorlayer);
 
+
+    const audioLooper = new AudioLooper();
+
     let selectedName = null;
     let selected = null;
     map.on('pointermove', function(e) {
@@ -113,9 +175,11 @@ $(document).ready(() => {
           if (newName !== selectedName) {
               Shiny.onInputChange('hoverCountry', newName);
               selectedName = newName;
+              audioLooper.setCountry(newName);
           }
       } else {
           selectedName = '';
+          audioLooper.setCountry();
       }
     });
 });
