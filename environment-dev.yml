@@ -8,3 +8,4 @@ dependencies:
   # extra dev packages
   - r-shinytest
   - r-rsconnect
+  - r-bh
