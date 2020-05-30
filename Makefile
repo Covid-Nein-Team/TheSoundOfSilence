@@ -52,6 +52,9 @@ env-npm:
 	npm install
 	npm run build
 
+build:
+	npm run build
+
 dev-create-test: export R_BROWSER = 'xdg-open'
 dev-create-test:
 	R -e "shinytest::recordTest('.', loadTimeout=10000)"
