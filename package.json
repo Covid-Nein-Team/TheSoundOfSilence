@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify js/index.js -o www/bundle.js",
+    "build": "browserify  -t [ browserify-css --minify=true --output www/bundle.css ] -g [ babelify --presets [ \"@babel/preset-env\" ] ] --entry js/index.js -o www/bundle.js",
     "watch": "watchify js/index.js -o www/bundle.js -v"
   },
   "repository": {
@@ -21,27 +21,18 @@
     "url": "https://github.com/Covid-Nein-Team/TheSoundOfSilence/issues"
   },
   "homepage": "https://github.com/Covid-Nein-Team/TheSoundOfSilence#readme",
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "es2015"
-          ]
-        }
-      ]
-    ]
-  },
   "dependencies": {
     "@babel/polyfill": "^7.10.1",
-    "browserify": "^16.5.1",
     "jquery": "^3.5.1",
-    "watchify": "^3.11.1"
+    "ol": "^6.3.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0"
+    "@babel/core": "^7.0.0-beta.56",
+    "@babel/preset-env": "^7.0.0-beta.56",
+    "babelify": "^9.0.0",
+    "browserify": "^16.2.2",
+    "browserify-css": "^0.15.0",
+    "uglifyify": "^5.0.1",
+    "watchify": "^3.11.1"
   }
 }
