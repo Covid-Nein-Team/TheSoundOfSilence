@@ -1,6 +1,6 @@
 # The Sound Of Silence &mdash; Quiet Planet
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Covid-Nein-Team/TheSoundOfSilence)
+<!-- ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Covid-Nein-Team/TheSoundOfSilence) -->
 
 Our contribution to the Covid-19 spaceapps challenge! 
 
