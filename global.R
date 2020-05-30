@@ -18,4 +18,4 @@ source("modules/google_analytics.R", local = FALSE)
 GA_TOKEN <- google_analytics_read_token_file(here("GOOGLE_ANALYTICS.token"))
 
 # Add readme resources
-# shiny::addResourcePath('readme', './readme')
+shiny::addResourcePath('mapdata', './resources')
