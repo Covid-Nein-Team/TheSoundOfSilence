@@ -6,12 +6,12 @@ import json
 import re
 from tqdm import tqdm
 
-# This file processes MOPPIT carbon monoxide measurements
+# This file processes MOPITT carbon monoxide measurements
 # ( https://www2.acom.ucar.edu/mopitt )
 # In particular, we read the raw data as provided by
 # https://earthdata.nasa.gov/ in HE 5 format and transform it to a CSV
 # file with time (in days) on the y axis and countries on the x axis.
-# The matching from MOPPIT geolocations to countries is performed using an
+# The matching from MOPITT geolocations to countries is performed using an
 # auxiliary geojson file.
 
 GEOJSON_FILE = '../resources/countries.geojson'
