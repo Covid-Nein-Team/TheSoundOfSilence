@@ -1,13 +1,13 @@
 import csv
 
-# load data from CSV as provided by the European Union under
+# preprocesses CSV data as provided by the European Union under
 # https://data.europa.eu/euodp/de/data/dataset/covid-19-coronavirus-data
-# The data format is, for each column:
+# The expected data format is, for each row:
 # 
 # date, day, month, year, cases, deaths, countriesAndTerritories, geoId, countryterritoryCode, popData2018, continentExp
 #
 # We transform this into a table with dates on the y axis, countries on the
-# x axis, and normalized cases in the range [0, 1] in each cell.
+# x axis, and number of cases in each cell.
 
 YEAR_COL = 3
 MONTH_COL = 2
