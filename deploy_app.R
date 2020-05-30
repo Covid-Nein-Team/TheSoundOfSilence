@@ -12,4 +12,4 @@ if (!file.exists("SHINYAPPS_SECRET.R")) {
 }
 source("SHINYAPPS_SECRET.R")
 
-deployApp(".", appName = "thesoundofsilence")
+deployApp(".", appName = "thesoundofsilence", appFileManifest = "manifest.txt")
