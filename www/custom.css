@@ -7,3 +7,12 @@ a.item-disabled[data-toggle=tab] {
     pointer-events: none;
     color: red !important;
 }
+
+#body-content {
+    padding: 0;
+}
+
+#earth-map {
+    width: 100%;
+    height: calc(100vh - 50px);
+}

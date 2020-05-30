@@ -22,27 +22,21 @@ dash_sidebar <- dashboardSidebar(
 )
 
 dash_body <- dashboardBody(
+  id="body-content",
+
   tags$head(
     # Google Analytics Token, see `modules/google_analytics.R`
     google_analytics_tag_html(GA_TOKEN),
     # include custom.css
+    tags$link(rel = "stylesheet", type = "text/css", href = "bundle.css"),
     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
   ),
   # load shinyjs
   shinyjs::useShinyjs(),
 
-  tabItems(
-    # Data Upload Tab ----
-    tabItem(
-      tabName = "main",
-
-      h2("WIP"),
-      # Indicators ----
-      fluidRow(
-        div(
-          class = "earth-map",
-        ),
-      )
+  fillPage(
+    div(
+      id = "earth-map",
     )
   ),
 
