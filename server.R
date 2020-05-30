@@ -2,9 +2,9 @@
 # ========================
 # Created by: Covid Nein Team
 
-
 # Define server logic ----
 server <- function(input, output, session) {
-  print("todo")
-
+  observeEvent(input$hoverCountry, {
+     cat("\nyou clicked on a pie with pie slice data: ", input$hoverCountry)
+  })
 }
