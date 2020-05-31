@@ -18,6 +18,9 @@ In more detail, the following preprocessed data files are contained:
     the [MOPITT mission][3] by the Canadian Space Agency. The data is
     pre-processed to an average per country per day, using the geo-location
     data as contained in the `../resources/countries.geojson` file.
+4. `no2_data.csv`: Contains measurements of nitrogen dioxide (NO2) in the
+    troposphere in molecules per square centimetre as reported by the
+    [OMI Mission][4] 
 
 In addition to these files, we also supply the following auxiliary files that
 we used to pre-process the data.
@@ -30,13 +33,18 @@ we used to pre-process the data.
     measurements from NASA.
 * `mopitt_raw_data/mopitt_links.txt` : A file containing the links to
     load [MOPITT][3] data from NASA.
+* `omi_raw_data/load_omi_data.sh` : A script to load [OMI][4] measurements
+    from NASA.
 * `preprocess_covid_data.py` : A Python3 script to transform the
     `covid_19_cases_raw.csv` file into the `covid_19_cases.csv` file.
 * `preprocess_google_data.py`: A Python3 script to transform the
     `Global_Mobility_Report.csv` file into the `mobility_data.csv` file.
 * `preprocess_mopitt_data.py` : A Python3 script to transform the
     data downloaded via `load_moppit_data.sh` into the `co_data.csv` file.
+* `preprocess_omi_data.py` : A Python3 script to transform the
+    data downloaded via `load_omi_data.sh` into the `no2_data.csv` file.
 
-[1]:https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data "Covid 19 data page by the European Union"
-[2]:https://www.google.com/covid19/mobility/ "COVID-19 Community Mobility Reports"
+[1]:https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data "Covid 19 data page by the European Union."
+[2]:https://www.google.com/covid19/mobility/ "COVID-19 Community Mobility Reports."
 [3]:https://www2.acom.ucar.edu/mopitt "MOPITT Mission page."
+[4]:https://aura.gsfc.nasa.gov/omi.html "OMI Mission page."
