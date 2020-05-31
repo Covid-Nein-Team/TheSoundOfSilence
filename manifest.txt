@@ -19,4 +19,4 @@ resources/countries.geojson
 resources/audio
 
 # data files TODO
-
+data/covid_19_cases.csv
