@@ -128,8 +128,8 @@ $(document).ready(() => {
     });
 
     const source = new WMTS({
-      url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=2013-06-16',
-      layer: 'MODIS_Terra_CorrectedReflectance_TrueColor',
+      url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=2019-01-01',
+      layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
       format: 'image/jpeg',
       matrixSet: 'EPSG4326_250m',
       tileGrid: new WMTSTileGrid({
