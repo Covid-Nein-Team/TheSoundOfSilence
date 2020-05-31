@@ -21,3 +21,6 @@ resources/mixed
 
 # data files
 resources/accumulated_data.csv
+
+# include GA-APPS
+GOOGLE_ANALYTICS.token
