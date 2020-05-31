@@ -26,6 +26,7 @@ class AudioLooper {
         this.currentCountry = null;
         this.currentPosition = 0.0;
         this.state = 'stop';
+        this._mute = false;
 
         // test
         this.testFiles = [
@@ -63,7 +64,9 @@ class AudioLooper {
         this.audio.addEventListener("timeupdate", () => {
             this.currentPosition = this.audio.currentTime;
         });
-        this.play();
+        if (!this._mute) {
+            this.play();
+        }
     }
 
     stop() {
@@ -88,7 +91,19 @@ class AudioLooper {
         });
     }
 
+    mute(state) {
+        console.log('audiolooper', state);
+        if (state) {
+            this._mute = true;
+            this.stop()
+        } else {
+            this._mute = false;
+        }
+    }
+
 }
+
+window.audioLooper = new AudioLooper();
 
 
 $(document).ready(() => {
@@ -167,9 +182,6 @@ $(document).ready(() => {
 
     map.addLayer(vectorlayer);
 
-
-    const audioLooper = new AudioLooper();
-
     let selectedName = null;
     let selected = null;
     map.on('pointermove', function(e) {
@@ -187,11 +199,11 @@ $(document).ready(() => {
           if (newName !== selectedName) {
               Shiny.onInputChange('hoverCountry', newName);
               selectedName = newName;
-              audioLooper.setCountry(newName);
+              window.audioLooper.setCountry(newName);
           }
       } else {
           selectedName = '';
-          audioLooper.setCountry();
+          window.audioLooper.setCountry();
       }
     });
 

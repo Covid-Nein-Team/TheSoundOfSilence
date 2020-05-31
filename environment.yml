@@ -18,3 +18,4 @@ dependencies:
   - r-shinydashboard
   - r-shinycssloaders
   - r-shinyjs
+  - r-shinywidgets
