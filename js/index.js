@@ -106,6 +106,125 @@ class AudioLooper {
 window.audioLooper = new AudioLooper();
 
 
+function addDays(date, days) {
+    let result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
+function getDay(index) {
+    // okay, there's not enough time to get all of this working
+    // cutting a few corners :P here
+    index = index % 160;
+    let start = new Date('2019-12-01');
+    let current = addDays(start, index);
+    return current.toISOString().split('T')[0];
+}
+
+window.spaceAppsGetDay = getDay;
+
+function createNewTileLayer(dayString) {
+
+    const source = new WMTS({
+        url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=' + dayString,
+        layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
+        format: 'image/jpeg',
+        matrixSet: 'EPSG4326_250m',
+        tileGrid: new WMTSTileGrid({
+            origin: [-180, 90],
+            resolutions: [
+                0.5625,
+                0.28125,
+                0.140625,
+                0.0703125,
+                0.03515625,
+                0.017578125,
+                0.0087890625,
+                0.00439453125,
+                0.002197265625
+            ],
+            matrixIds: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            tileSize: 512
+        })
+    });
+
+    return new Tile({
+        source: source,
+        extent: [-180, -90, 180, 90]
+    });
+}
+
+// FAKE time playback.
+// there's not enough time to have this synchronized to audio playback
+// in a realistic way. need to get this out in about 25minutes...
+class TileLayerPlayback {
+
+    constructor(map, bufferlength=10, timeout=500) {
+        this._map = map;
+
+        this.buffer = [];
+
+        for (let i = 0; i < bufferlength; i++) {
+            let layer = createNewTileLayer(getDay(i));
+            this.buffer.push(layer);
+            layer.setZIndex(bufferlength - i);
+            this._map.addLayer(layer);
+        }
+        this.index = bufferlength - 1;
+        this.timeout = timeout;
+
+        this._should_stop = false;
+        this._cb_ref = null;
+    }
+
+    play() {
+        this._should_stop = false;
+        this._playloop();
+    }
+
+    stop() {
+        this._should_stop = true;
+        if (this._cb_ref) {
+            clearTimeout(this._cb_ref);
+            this._cb_ref = null;
+        }
+    }
+
+    _playloop() {
+        if (this._should_stop) {
+            this._should_stop = false;
+            if (this._cb_ref) {
+                clearTimeout(this._cb_ref);
+                this._cb_ref = null;
+            }
+        } else {
+            this.cycleLayer();
+            this._cb_ref = setTimeout(() => this._playloop(), this.timeout);
+        }
+    }
+
+    cycleLayer() {
+        // remove old layer
+        let oldLayer = this.buffer.shift();
+        oldLayer.setZIndex(-this.buffer.length);
+        this._map.removeLayer(oldLayer);
+
+        // reassign z index
+        for (let i = 0; i < this.buffer.length; i++) {
+            this.buffer[i].setZIndex(this.buffer.length - i)
+        }
+
+        // add new layer
+        this.index += 1;
+        let newLayer = createNewTileLayer(getDay(this.index));
+        this.buffer.push(newLayer);
+        newLayer.setZIndex(0);
+        this._map.addLayer(newLayer);
+    }
+
+}
+
+
 $(document).ready(() => {
     console.log('ready...');
 
@@ -139,38 +258,9 @@ $(document).ready(() => {
       }),
       target: 'earth-map',
       renderer: ['canvas', 'dom']
-
     });
 
-    const source = new WMTS({
-      url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=2019-01-01',
-      layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
-      format: 'image/jpeg',
-      matrixSet: 'EPSG4326_250m',
-      tileGrid: new WMTSTileGrid({
-        origin: [-180, 90],
-        resolutions: [
-          0.5625,
-          0.28125,
-          0.140625,
-          0.0703125,
-          0.03515625,
-          0.017578125,
-          0.0087890625,
-          0.00439453125,
-          0.002197265625
-        ],
-        matrixIds: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        tileSize: 512
-      })
-    });
-
-    const layer = new Tile({
-      source: source,
-      extent: [-180, -90, 180, 90]
-    });
-
-    map.addLayer(layer);
+    window.tileLayerPlayback = new TileLayerPlayback(map, 6);
 
     const vectorlayer = new VectorLayer({
       source: new VectorSource({
@@ -179,6 +269,7 @@ $(document).ready(() => {
       }),
       style: defaultStyle
     })
+    vectorlayer.setZIndex(100);
 
     map.addLayer(vectorlayer);
 
