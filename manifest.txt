@@ -13,6 +13,7 @@ www/bundle.css
 www/bundle.js
 www/custom.css
 www/favicon.ico
+www/logo_small-fs8.png
 
 # resources
 resources/countries.geojson
