@@ -1,7 +1,8 @@
 import csv
+import json
 
 # preprocesses CSV data as provided by the European Union under
-# https://data.europa.eu/euodp/de/data/dataset/covid-19-coronavirus-data
+# https://data.europa.eu/euodp/en/data/dataset/covid-19-coronavirus-data
 # The expected data format is, for each row:
 # 
 # date, day, month, year, cases, deaths, countriesAndTerritories, geoId, countryterritoryCode, popData2018, continentExp
@@ -15,8 +16,19 @@ DAY_COL = 1
 CASES_COL = 4
 COUNTRY_COL = 6
 
+GEOJSON_FILE = '../resources/countries.geojson'
+
+# get a list of countries from the auxiliary geojson file
+countries = []
+with open(GEOJSON_FILE) as geojson_file:
+    geojson = json.load(geojson_file)
+    for country_json in geojson['features']:
+        country = country_json['properties']['name']
+        countries.append(country)
+countries.sort()
+
 # initialize the mapping from date strings to indices,
-# starting december 1st, 2019 until May 30th, 2020
+# starting december 1st, 2019 until May 31st, 2020
 
 date_to_index = {}
 dates = []
@@ -36,8 +48,7 @@ for month in range(len(num_days)):
         date_to_index[date] = len(out_data)
         out_data.append({})
 
-countries = set()
-
+countries_not_found = set()
 with open('covid_19_cases_raw.csv', newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='\"')
     idx = -1
@@ -47,10 +58,19 @@ with open('covid_19_cases_raw.csv', newline='') as csvfile:
             continue
         date = '%s-%s-%s' % (row[YEAR_COL], row[MONTH_COL], row[DAY_COL])
         i = date_to_index[date]
-        country = row[COUNTRY_COL]
+        country = row[COUNTRY_COL].replace('_', ' ')
+        if country == 'Czechia':
+            country = 'Czech Republic'
+        if country not in countries:
+            countries_not_found.add(country)
+            continue
         cases   = row[CASES_COL]
-        countries.add(country)
         out_data[i][country] = cases
+
+if len(countries_not_found) > 0:
+    print('The following countries were not found in the auxiliary geojson file:')
+    for entry in sorted(countries_not_found):
+        print(entry)
 
 # sort all countries contained in the data
 countries = list(sorted(countries))
