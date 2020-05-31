@@ -22,9 +22,10 @@ class AudioLooper {
 
     constructor(audioPath = 'mapdata/audio') {
         this.audioPath = audioPath;
+        this.audio = null;
         this.currentCountry = null;
         this.currentPosition = 0.0;
-        this.audio = null;
+        this.state = 'stop';
 
         // test
         this.testFiles = [
@@ -36,43 +37,57 @@ class AudioLooper {
         this.testIdx = 0;
     }
 
-    setCountry(country) {
-        if (country === this.currentCountry) {
-            if (this.audio !== null) {
-                this.audio.play();
-            }
-            return;
-        }
-        if (country === null) {
-            this.currentCountry = null;
-            if (this.audio !== null) {
-                this.audio.pause();
-            }
-            return;
-        }
-        if (this.audio !== null) {
-            this.audio.pause();
-        }
-        this.audio = new Audio(this.getAudioPath(country));
-        this.audio.loop = true;
-        this.audio.currentTime = this.currentPosition;
-        this.audio.play();
-        this.audio.addEventListener("timeupdate", () => {
-            this.currentPosition = this.audio.currentTime;
-        });
-    }
-
     getAudioPath(country) {
+        // test implementation
         let idx = this.testIdx;
         this.testIdx = (idx + 1) % this.testFiles.length;
         return this.audioPath + '/' + this.testFiles[idx];
     }
 
-    pause() {
-        if (this.audio) {
+    setCountry(country = null) {
+        if (country === null || country === undefined || country.length === 0) {
+            this.stop();
+            this.state = 'stop';
+            this.currentCountry = country;
+            return;
+        }
+        if (this.state !== 'stop' && country === this.currentCountry) {
+            return;
+        }
+        this.stop();
+        this.state = 'playing';
+        this.currentCountry = country;
+        this.audio = new Audio(this.getAudioPath(country));
+        this.audio.loop = true;
+        this.audio.currentTime = this.currentPosition;
+        this.audio.addEventListener("timeupdate", () => {
+            this.currentPosition = this.audio.currentTime;
+        });
+        this.play();
+    }
+
+    stop() {
+        try {
             this.audio.pause();
+        } catch (error) {
+            if (this.audio === null) {
+                // harmless
+            } else {
+                console.log('pause threw error?', error);
+            }
         }
     }
+
+    play() {
+        this.audio.play().catch(error => {
+            if (error.code === 20) {
+                // harmless
+            } else {
+                console.error(error);
+            }
+        });
+    }
+
 }
 
 
