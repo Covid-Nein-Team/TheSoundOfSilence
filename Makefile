@@ -48,6 +48,10 @@ env-production:
 env-development: env-production
 	conda env update -f=environment-dev.yml -n spaceapps2020
 
+env-vaporware:
+	R -e 'devtools::install_github("moldach/vapoRwave")'
+
+
 env-npm:
 	npm install
 	npm run build
