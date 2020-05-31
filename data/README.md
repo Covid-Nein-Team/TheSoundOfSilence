@@ -32,7 +32,10 @@ In more detail, the following preprocessed data files are contained:
 
 All data uses the country names in the `../resources/countries.geojson`. Note
 that only 180 countries are contained, as many smaller states are,
-unfortunately, not covered well by standard satteliter resolutions.
+unfortunately, not covered well by standard sattelite resolutions.
+
+We extend our gratitude to [NASA Earthdata](https://earthdata.nasa.gov/), from
+where all sattelite data was loaded.
 
 In addition to these files, we also supply the following auxiliary files that
 we used to pre-process the data.
