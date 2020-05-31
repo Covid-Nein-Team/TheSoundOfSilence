@@ -48,6 +48,18 @@ for month in range(len(num_days)):
         date_to_index[date] = len(out_data)
         out_data.append({})
 
+# set up a hand-defined auxiliary mapping to map country names in the
+# google file to country names in the geojson file
+country_aux_map = {
+    'Czechia' : 'Czech Republic',
+    'Congo' : 'Republic of the Congo',
+    'Cote dIvoire' : 'Ivory Coast',
+    'North Macedonia' : 'Macedonia',
+    'Serbia' : 'Republic of Serbia'
+}
+
+# read the actual data
+
 countries_not_found = set()
 with open('covid_19_cases_raw.csv', newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='\"')
@@ -59,9 +71,9 @@ with open('covid_19_cases_raw.csv', newline='') as csvfile:
         date = '%s-%s-%s' % (row[YEAR_COL], row[MONTH_COL], row[DAY_COL])
         i = date_to_index[date]
         country = row[COUNTRY_COL].replace('_', ' ')
-        if country == 'Czechia':
-            country = 'Czech Republic'
-        if country not in countries:
+        if country in country_aux_map:
+            country = country_aux_map[country]
+        elif country not in countries:
             countries_not_found.add(country)
             continue
         cases   = row[CASES_COL]
@@ -71,9 +83,6 @@ if len(countries_not_found) > 0:
     print('The following countries were not found in the auxiliary geojson file:')
     for entry in sorted(countries_not_found):
         print(entry)
-
-# sort all countries contained in the data
-countries = list(sorted(countries))
 
 # write an output CSV
 with open('covid_19_cases.csv', 'w', newline='') as csvfile:

@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+import json
 
 # preprocesses data from the Global_Mobility_Report.csv as provided by Google
 # under https://www.google.com/covid19/mobility/
@@ -16,6 +17,8 @@ DATE_COL = 4
 COUNTRY_COL = 1
 REGION_COL = 2
 DATA_COL = 5
+
+GEOJSON_FILE = '../resources/countries.geojson'
 
 # initialize the mapping from date strings to indices,
 # starting February 15th, 2020 until May 25th, 2020
@@ -37,8 +40,31 @@ for month_index in range(len(months)):
         date_to_index[date] = len(out_data)
         out_data.append({})
 
-countries = set()
 
+# get a list of countries from the auxiliary geojson file
+countries = []
+with open(GEOJSON_FILE) as geojson_file:
+    geojson = json.load(geojson_file)
+    for country_json in geojson['features']:
+        country = country_json['properties']['name']
+        countries.append(country)
+countries.sort()
+
+# set up a hand-defined auxiliary mapping to map country names in the
+# google file to country names in the geojson file
+country_aux_map = {
+    'Czechia' : 'Czech Republic',
+    'Côte d\'Ivoire' : 'Ivory Coast',
+    'Guinea-Bissau' : 'Guinea Bissau',
+    'Myanmar (Burma)' : 'Myanmar',
+    'North Macedonia' : 'Macedonia',
+    'Serbia' : 'Republic of Serbia',
+    'Tanzania' : 'United Republic of Tanzania',
+    'United States' : 'United States of America',
+}
+
+# read the actual data
+countries_not_found = set()
 with open('Global_Mobility_Report.csv', newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='\"')
     idx = -1
@@ -52,16 +78,22 @@ with open('Global_Mobility_Report.csv', newline='') as csvfile:
         date     = row[DATE_COL]
         i        = date_to_index[date]
         country  = row[COUNTRY_COL]
+        if country in country_aux_map:
+            country = country_aux_map[country]
+        if country not in countries:
+            countries_not_found.add(country)
+            continue
         activity = 0
         for j in range(DATA_COL, len(row)):
             if row[j] == '':
                 continue
             activity += int(row[j])
-        countries.add(country)
         out_data[i][country] = activity
 
-# sort all countries contained in the data
-countries = list(sorted(countries))
+if len(countries_not_found) > 0:
+    print('The following countries were not found in the auxiliary geojson file:')
+    for entry in sorted(countries_not_found):
+        print(entry)
 
 # write an output CSV
 with open('mobility_data.csv', 'w', newline='') as csvfile:
