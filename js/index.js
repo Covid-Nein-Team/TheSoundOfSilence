@@ -194,4 +194,11 @@ $(document).ready(() => {
           audioLooper.setCountry();
       }
     });
+
+    $('a[data-toggle=offcanvas]').click(() => {
+        setTimeout( function() { map.updateSize();}, 200);
+    });
+    window.onresize = function() {
+        setTimeout( function() { map.updateSize();}, 200);
+    }
 });
