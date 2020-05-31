@@ -13,10 +13,12 @@ www/bundle.css
 www/bundle.js
 www/custom.css
 www/favicon.ico
+www/logo_small-fs8.png
 
 # resources
 resources/countries.geojson
 resources/audio
+resources/mixed
 
 # data files
 resources/accumulated_data.csv
