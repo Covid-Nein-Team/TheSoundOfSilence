@@ -25,6 +25,7 @@ function countryCase(str) {
   return str.join('_') + '.ogg';
 }
 
+
 class AudioLooper {
 
     constructor(audioPath = 'mapdata/mixed') {
@@ -60,6 +61,12 @@ class AudioLooper {
         this.audio.currentTime = this.currentPosition;
         this.audio.addEventListener("timeupdate", () => {
             this.currentPosition = this.audio.currentTime;
+            let v = this.audio.currentTime / this.audio.duration;
+            if (v) {
+                if (window.updateSliderFraction) {
+                    window.updateSliderFraction(v);
+                }
+            }
         });
         if (!this._mute) {
             this.play();
@@ -301,4 +308,18 @@ $(document).ready(() => {
     window.onresize = function() {
         setTimeout( function() { map.updateSize();}, 200);
     }
+
+    function updateSliderFraction(val) {
+        let dateSlider = $("#currentDay");
+        let iDateSlider = jQuery.data(dateSlider[0]).ionRangeSlider;
+        if (iDateSlider) {
+            let a = iDateSlider.options.min;
+            let b = iDateSlider.options.max;
+            let v = parseInt((b - a) * val + a);
+            iDateSlider.update({from: v});
+        } else {
+            console.log('???');
+        }
+    }
+    window.updateSliderFraction = updateSliderFraction
 });
