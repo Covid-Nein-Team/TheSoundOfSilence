@@ -18,7 +18,18 @@ dash_header <- dashboardHeader(
 dash_sidebar <- dashboardSidebar(
   sidebarMenu(
       menuItem("Main", tabName = "main", icon = icon("dashboard"))
-  )
+  ),
+  sliderInput("currentDay",
+              "Displayed Date:",
+              min = as.Date("2019-12-01", "%Y-%m-%d"),
+              max = as.Date("2020-04-30", "%Y-%m-%d"),
+              value=as.Date("2019-12-01"),
+              timeFormat="%Y-%m-%d"
+  ),
+  switchInput("audioEnabled",
+              label = "Audio",
+              value = TRUE)
+
 )
 
 dash_body <- dashboardBody(

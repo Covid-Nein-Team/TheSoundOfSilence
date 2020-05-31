@@ -1,10 +1,22 @@
+# R script files
 global.R
 server.R
 ui.R
 run_test.R
 modules/google_analytics.R
+
+# R related contents
 .here
+
+# javascript and css
 www/bundle.css
 www/bundle.js
 www/custom.css
+www/favicon.ico
+
+# resources
 resources/countries.geojson
+resources/audio
+
+# data files TODO
+

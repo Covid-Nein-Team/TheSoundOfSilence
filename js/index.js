@@ -17,6 +17,95 @@ import $ from "jquery";
 
 require('./index.css')
 
+
+class AudioLooper {
+
+    constructor(audioPath = 'mapdata/audio') {
+        this.audioPath = audioPath;
+        this.audio = null;
+        this.currentCountry = null;
+        this.currentPosition = 0.0;
+        this.state = 'stop';
+        this._mute = false;
+
+        // test
+        this.testFiles = [
+            'accordeon_usa.ogg',
+            'kalimba_ger.ogg',
+            'new_age_ger.ogg',
+            'tubular_bells_usa.ogg'
+        ]
+        this.testIdx = 0;
+    }
+
+    getAudioPath(country) {
+        // test implementation
+        let idx = this.testIdx;
+        this.testIdx = (idx + 1) % this.testFiles.length;
+        return this.audioPath + '/' + this.testFiles[idx];
+    }
+
+    setCountry(country = null) {
+        if (country === null || country === undefined || country.length === 0) {
+            this.stop();
+            this.state = 'stop';
+            this.currentCountry = country;
+            return;
+        }
+        if (this.state !== 'stop' && country === this.currentCountry) {
+            return;
+        }
+        this.stop();
+        this.state = 'playing';
+        this.currentCountry = country;
+        this.audio = new Audio(this.getAudioPath(country));
+        this.audio.loop = true;
+        this.audio.currentTime = this.currentPosition;
+        this.audio.addEventListener("timeupdate", () => {
+            this.currentPosition = this.audio.currentTime;
+        });
+        if (!this._mute) {
+            this.play();
+        }
+    }
+
+    stop() {
+        try {
+            this.audio.pause();
+        } catch (error) {
+            if (this.audio === null) {
+                // harmless
+            } else {
+                console.log('pause threw error?', error);
+            }
+        }
+    }
+
+    play() {
+        this.audio.play().catch(error => {
+            if (error.code === 20) {
+                // harmless
+            } else {
+                console.error(error);
+            }
+        });
+    }
+
+    mute(state) {
+        console.log('audiolooper', state);
+        if (state) {
+            this._mute = true;
+            this.stop()
+        } else {
+            this._mute = false;
+        }
+    }
+
+}
+
+window.audioLooper = new AudioLooper();
+
+
 $(document).ready(() => {
     console.log('ready...');
 
@@ -54,8 +143,8 @@ $(document).ready(() => {
     });
 
     const source = new WMTS({
-      url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=2013-06-16',
-      layer: 'MODIS_Terra_CorrectedReflectance_TrueColor',
+      url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=2019-01-01',
+      layer: 'VIIRS_SNPP_CorrectedReflectance_TrueColor',
       format: 'image/jpeg',
       matrixSet: 'EPSG4326_250m',
       tileGrid: new WMTSTileGrid({
@@ -96,26 +185,32 @@ $(document).ready(() => {
     let selectedName = null;
     let selected = null;
     map.on('pointermove', function(e) {
-        console.log('move', selected);
       if (selected !== null) {
           selected.setStyle(defaultStyle);
           selected = null;
       }
       map.forEachFeatureAtPixel(e.pixel, function(f) {
-          console.log()
           selected = f;
           f.setStyle(highlightStyle);
           return true;
       });
-
       if (selected) {
           let newName = selected.get('name');
           if (newName !== selectedName) {
               Shiny.onInputChange('hoverCountry', newName);
               selectedName = newName;
+              window.audioLooper.setCountry(newName);
           }
       } else {
           selectedName = '';
+          window.audioLooper.setCountry();
       }
     });
+
+    $('a[data-toggle=offcanvas]').click(() => {
+        setTimeout( function() { map.updateSize();}, 200);
+    });
+    window.onresize = function() {
+        setTimeout( function() { map.updateSize();}, 200);
+    }
 });

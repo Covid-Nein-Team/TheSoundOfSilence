@@ -21,7 +21,7 @@ help:
 	@echo "  dev-create-test   create a new shinytest test"
 	@echo
 
-run:
+run: www/bundle.js
 	R -e "shiny::shinyOptions(shiny.autoreload = TRUE); shiny::runApp('./', port=$(PORT))"
 
 debug:
@@ -53,6 +53,9 @@ env-npm:
 	npm run build
 
 build:
+	npm run build
+
+www/bundle.js: js/index.js
 	npm run build
 
 dev-create-test: export R_BROWSER = 'xdg-open'

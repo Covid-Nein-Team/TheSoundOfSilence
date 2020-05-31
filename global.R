@@ -8,6 +8,7 @@ library(here)
 library(shiny)
 library(shinydashboard)
 library(shinycssloaders)
+library(shinyWidgets)
 
 # App Settings:
 APP_NAME <- "The Sound Of Silence"
