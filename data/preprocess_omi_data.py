@@ -18,6 +18,8 @@ from tqdm import tqdm
 GEOJSON_FILE = '../resources/countries.geojson'
 OUT_FILE = 'no2_data.csv'
 
+SHOW_DEBUG_PLOT = True
+
 date_pattern = re.compile('(20\d{2})m(\d{2})(\d{2})')
 
 # load the polygons for all countries from the geojson file
@@ -58,18 +60,21 @@ country_to_mask = {}
 for country in countries:
     country_to_mask[country] = np.zeros((len(lats), len(lons)))
 
+# to save runtime we only check every Nth point
+COARSENESS = 2
+
 # now, iterate over each grid point and check in which country it is
 print('setting up geographic mask for each country')
 last_country = None
-for i in tqdm(range(len(lats))):
-    for j in range(len(lons)):
+for i in tqdm(range(0, len(lats), COARSENESS)):
+    for j in range(0, len(lons), COARSENESS):
         point = Point(lons[j], lats[i])
         # check first if we are in the same country as before
         found_country = False
         if last_country is not None:
             for polygon in country_to_polygons[last_country]:
                 if polygon.contains(point):
-                    country_to_mask[last_country][i, j] = 1.
+                    country_to_mask[last_country][i:(i+COARSENESS), :][:, j:(j+COARSENESS)] = 1.
                     found_country = True
                     break
         # otherwise check all countries
@@ -79,7 +84,7 @@ for i in tqdm(range(len(lats))):
                     continue
                 for polygon in country_to_polygons[country]:
                     if polygon.contains(point):
-                        country_to_mask[country][i, j] = 1.
+                        country_to_mask[country][i:(i+COARSENESS), :][:, j:(j+COARSENESS)] = 1.
                         found_country = True
                         last_country = country
                         break
@@ -104,6 +109,7 @@ he5_files.sort()
 # initialize output lists
 out_data = []
 dates    = []
+showed_debug_plot = False
 
 # iterate over all OMI files
 for he5_file in he5_files:
@@ -116,18 +122,29 @@ for he5_file in he5_files:
 
     with h5py.File("omi_raw_data/" + he5_file, 'r') as f:
         # retrieve NO2 measurements
-        NO2 = np.array(f['HDFEOS']['GRIDS']['ColumnAmountNO2']['Data Fields']['ColumnAmountNO2'])
+        NO2 = np.array(f['HDFEOS']['GRIDS']['ColumnAmountNO2']['Data Fields']['ColumnAmountNO2']) * 1E-18
         # get the mask for missing values
         valid = NO2 > 0.
+
+        if SHOW_DEBUG_PLOT and not showed_debug_plot:
+            # for debug-purposes: show a few masks
+            import matplotlib.pyplot as plt
+            plt_data = np.copy(NO2)
+            plt_data[plt_data < 0] = 0.
+            plt_data += 0.1 * country_to_mask['Germany'] + 0.1 * country_to_mask['Australia'] + 0.1 * country_to_mask['China']
+            plt.imshow(plt_data)
+            plt.colorbar()
+            plt.show()
+            showed_debug_plot = True
 
         # iterate over all countries and mask out the matching values
         for c in tqdm(range(len(countries))):
             country = countries[c]
-            mask = country_to_mask[country]
+            mask = np.logical_and(country_to_mask[country] > 0.5, valid)
             # check if there are any non-missing values in the country mask
-            if np.sum(mask[valid] > 0.5):
+            if np.any(mask):
                 # if so, take the average value over the mask
-                country_to_value[country] = np.mean(mask[valid] * NO2[valid])
+                country_to_value[country] = np.mean(NO2[mask])
             else:
                 country_to_value[country] = float('nan')
 
