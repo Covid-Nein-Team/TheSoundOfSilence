@@ -3,6 +3,7 @@
 # Created by: Covid Nein Team
 
 dash_header <- dashboardHeader(
+  titleWidth = 350,
   title = APP_NAME,
   tags$li(
     a(
@@ -16,6 +17,8 @@ dash_header <- dashboardHeader(
 )
 
 dash_sidebar <- dashboardSidebar(
+  width = 350,
+
   sidebarMenu(
       menuItem("Main", tabName = "main", icon = icon("dashboard"))
   ),
@@ -28,8 +31,10 @@ dash_sidebar <- dashboardSidebar(
   ),
   switchInput("audioEnabled",
               label = "Audio",
-              value = TRUE)
-
+              value = TRUE),
+  plotOutput(
+              outputId = "sidebarPlot"
+  ) %>% shinycssloaders::withSpinner()
 )
 
 dash_body <- dashboardBody(
@@ -44,6 +49,7 @@ dash_body <- dashboardBody(
   ),
   # load shinyjs
   shinyjs::useShinyjs(),
+  includeJqueryUI(),
 
   fillPage(
     div(

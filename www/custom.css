@@ -16,3 +16,7 @@ a.item-disabled[data-toggle=tab] {
     width: 100%;
     height: calc(100vh - 50px);
 }
+
+body.skin-black aside.main-sidebar {
+    /* background-color: #0F0D1A; */
+}

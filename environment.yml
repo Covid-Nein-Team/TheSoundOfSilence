@@ -8,6 +8,7 @@ dependencies:
   # base r environment
   - r-base=4.0
   - r-essentials=4.0  # this includes the tidyverse
+  - r-devtools
 
   # extra packages
   - r-dt  # R to js DataTables
@@ -19,3 +20,4 @@ dependencies:
   - r-shinycssloaders
   - r-shinyjs
   - r-shinywidgets
+  - r-shinyjqui

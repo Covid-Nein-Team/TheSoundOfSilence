@@ -9,6 +9,8 @@ library(shiny)
 library(shinydashboard)
 library(shinycssloaders)
 library(shinyWidgets)
+library(shinyjqui)
+library(vapoRwave)
 
 # App Settings:
 APP_NAME <- "The Sound Of Silence"
