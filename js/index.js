@@ -173,18 +173,15 @@ $(document).ready(() => {
     let selectedName = null;
     let selected = null;
     map.on('pointermove', function(e) {
-        console.log('move', selected);
       if (selected !== null) {
           selected.setStyle(defaultStyle);
           selected = null;
       }
       map.forEachFeatureAtPixel(e.pixel, function(f) {
-          console.log()
           selected = f;
           f.setStyle(highlightStyle);
           return true;
       });
-
       if (selected) {
           let newName = selected.get('name');
           if (newName !== selectedName) {
