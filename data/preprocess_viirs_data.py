@@ -19,6 +19,8 @@ GEOJSON_FILE = '../resources/countries.geojson'
 OUT_FILE = 'evi_data.csv'
 RAW_DATA_FOLDER = 'viirs_raw_data'
 
+SHOW_DEBUG_PLOT = True
+
 date_pattern  = re.compile('A(20\d{2})(\d{3})')
 # note that we have a -1 at september to counteract the 29 days of february
 months_to_days = [31, 29, 31, 30, 31, 30, 31, 31, 30-1, 31, 30, 31]
@@ -57,7 +59,7 @@ countries = list(sorted(country_to_polygons.keys()))
 
 # since the grid of the OMI measurements is stable over time, we can pre-compute
 # the assignment from countries to geographic regions
-lats = np.arange(-90., 90., 0.05)
+lats = np.arange(90., -90., -0.05)
 lons = np.arange(-180., 180., 0.05)
 
 # initialize a mask for each country
@@ -96,12 +98,6 @@ for i in tqdm(range(0, len(lats), COARSENESS)):
                 if found_country:
                     break
 
-if True:
-    # for debug-purposes: show a few masks
-    import matplotlib.pyplot as plt
-    plt.imshow(country_to_mask['Germany'] + country_to_mask['Australia'] + country_to_mask['Netherlands'])
-    plt.show()
-
 print('finished geographic masks; starting to process VIIRS raw data')
 
 # set up the list of all he5 files in the current directory
@@ -115,7 +111,10 @@ he5_files.sort()
 out_data = []
 dates    = []
 
+import matplotlib.pyplot as plt
+
 # iterate over all OMI files
+showed_debug_plot = False
 for he5_file in he5_files:
     date = date_pattern.search(he5_file)
     year = date.groups()[0]
@@ -132,14 +131,25 @@ for he5_file in he5_files:
         # get the mask for missing values
         valid = EVI >= -10000
 
+        if SHOW_DEBUG_PLOT and not showed_debug_plot:
+            # for debug-purposes: show a few masks
+            import matplotlib.pyplot as plt
+            plt_data = np.copy(EVI)
+            plt_data[plt_data < -10000] = 0.
+            plt_data += country_to_mask['Germany'] * 15000 + country_to_mask['Australia'] * 15000
+            plt.imshow(plt_data)
+            plt.colorbar()
+            plt.show()
+            showed_debug_plot = True
+
         # iterate over all countries and mask out the matching values
         for c in tqdm(range(len(countries))):
             country = countries[c]
-            mask = country_to_mask[country]
+            mask = np.logical_and(country_to_mask[country] > 0.5, valid)
             # check if there are any non-missing values in the country mask
-            if np.sum(mask[valid] > 0.5):
+            if np.any(mask):
                 # if so, take the average value over the mask
-                country_to_value[country] = np.mean(mask[valid] * EVI[valid])
+                country_to_value[country] = np.mean(EVI[mask])
             else:
                 country_to_value[country] = float('nan')
 
