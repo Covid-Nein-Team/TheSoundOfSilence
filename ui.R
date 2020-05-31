@@ -32,6 +32,9 @@ dash_sidebar <- dashboardSidebar(
   switchInput("audioEnabled",
               label = "Audio",
               value = TRUE),
+  switchInput("mapPlayBackEnabled",
+              label = "AnimateMap",
+              value = FALSE),
   plotOutput(
               outputId = "sidebarPlot"
   ) %>% shinycssloaders::withSpinner()

@@ -57,4 +57,14 @@ server <- function(input, output, session) {
     }
   })
 
+  observeEvent(input$mapPlayBackEnabled, {
+    if (input$mapPlayBackEnabled) {
+      cat("\nmap playback enabled")
+      shinyjs::runjs("try { window.tileLayerPlayback.play(); } catch {};")
+    } else {
+      cat("\nmap playback disabled")
+      shinyjs::runjs("try { window.tileLayerPlayback.stop(); } catch {};")
+    }
+  })
+
 }
