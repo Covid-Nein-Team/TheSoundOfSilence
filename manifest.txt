@@ -18,6 +18,7 @@ www/logo_small-fs8.png
 # resources
 resources/countries.geojson
 resources/audio
+resources/mixed
 
 # data files
 resources/accumulated_data.csv

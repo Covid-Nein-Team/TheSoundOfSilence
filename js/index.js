@@ -17,10 +17,17 @@ import $ from "jquery";
 
 require('./index.css')
 
+function countryCase(str) {
+  str = str.toLowerCase().split(' ');
+  for (var i = 0; i < str.length; i++) {
+    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+  }
+  return str.join('_') + '.ogg';
+}
 
 class AudioLooper {
 
-    constructor(audioPath = 'mapdata/audio') {
+    constructor(audioPath = 'mapdata/mixed') {
         this.audioPath = audioPath;
         this.audio = null;
         this.currentCountry = null;
@@ -28,21 +35,11 @@ class AudioLooper {
         this.state = 'stop';
         this._mute = false;
 
-        // test
-        this.testFiles = [
-            'accordeon_usa.ogg',
-            'kalimba_ger.ogg',
-            'new_age_ger.ogg',
-            'tubular_bells_usa.ogg'
-        ]
-        this.testIdx = 0;
     }
 
     getAudioPath(country) {
         // test implementation
-        let idx = this.testIdx;
-        this.testIdx = (idx + 1) % this.testFiles.length;
-        return this.audioPath + '/' + this.testFiles[idx];
+        return this.audioPath + '/' + countryCase(country);
     }
 
     setCountry(country = null) {
