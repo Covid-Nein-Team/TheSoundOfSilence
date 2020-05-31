@@ -15,6 +15,27 @@ data <- read_csv('./resources/accumulated_data.csv') %>%
 server <- function(input, output, session) {
   shinyjs::disable("currentDay")
 
+  observeEvent(once = TRUE, ignoreNULL = FALSE, ignoreInit = FALSE, eventExpr = TRUE, {
+    showModal(modalDialog(
+      easyClose = TRUE,
+      title = "The Sound Of Silence --- SpaceApps COVID-19 Challenge 2020",
+      div(
+        id = 'logocontainer',
+        actionButton(inputId = "enterButton", label = NULL, style = "
+          margin: auto;
+          width: 100%; height: 100%;
+          background: url('logo_small-fs8.png');
+          background-size: cover; background-position: center;
+        ")
+        # img(src='./logo_small-fs8.png')
+      )
+    ))
+  })
+
+  observeEvent(input$enterButton, {
+    removeModal()
+  })
+
   observeEvent(input$hoverCountry, {
     cat("\nhovering over country: ", input$hoverCountry)
   })

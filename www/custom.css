@@ -20,3 +20,31 @@ a.item-disabled[data-toggle=tab] {
 body.skin-black aside.main-sidebar {
     /* background-color: #0F0D1A; */
 }
+
+#shiny-modal .modal-content {
+    background-color: #313131;
+}
+
+#shiny-modal .modal-title {
+    color: #eeeeee;
+    font-family: Helvetica;
+    text-align: center;
+}
+
+#shiny-modal .modal-body {
+    height: calc(100% - 120px);
+}
+
+#logocontainer {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+#shiny-modal .modal-footer {
+    display: flex;
+}
+
+#shiny-modal .modal-footer button {
+    margin: auto;
+}

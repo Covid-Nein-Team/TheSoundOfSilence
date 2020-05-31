@@ -50,6 +50,18 @@ dash_body <- dashboardBody(
     tags$link(rel = "stylesheet", type = "text/css", href = "bundle.css"),
     tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
   ),
+  tags$head(tags$style(HTML('
+    .modal.in .modal-dialog{
+      width: 90%;
+      height: 90%;
+      margin: auto;
+    }
+
+    .modal-content{
+      width: 100%;
+      height: 100%;
+    }
+  '))),
   # load shinyjs
   shinyjs::useShinyjs(),
   includeJqueryUI(),
