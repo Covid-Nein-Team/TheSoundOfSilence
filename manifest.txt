@@ -18,5 +18,5 @@ www/favicon.ico
 resources/countries.geojson
 resources/audio
 
-# data files TODO
-data/covid_19_cases.csv
+# data files
+resources/accumulated_data.csv

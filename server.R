@@ -2,10 +2,14 @@
 # ========================
 # Created by: Covid Nein Team
 
-data <- read_csv('./data/covid_19_cases.csv') %>%
-  pivot_longer(!date, names_to='country') %>%
-  mutate(date=lubridate::ymd(date))
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
+data <- read_csv('./resources/accumulated_data.csv') %>%
+  drop_na() %>%
+  mutate(date=lubridate::ymd(date)) %>%
+  group_by(country, dataset) %>%
+  mutate(normalized_value = range01(value)) %>%
+  ungroup()
 
 # Define server logic ----
 server <- function(input, output, session) {
@@ -19,17 +23,28 @@ server <- function(input, output, session) {
     req(input$hoverCountry)
     # render country data in plot
     cdata <- data %>% filter(country == input$hoverCountry)
-    ggplot(cdata, aes(x = date, y = value)) +
-      geom_line(color = "#FA5F70FF") +
-      labs(title = "Country Data") +
-      xlab("date") +
-      new_retro() +
-      guides(size = guide_legend(override.aes = list(colour = "#FA5F70FF"))) +
-      scale_y_continuous(position = "right") +
+    ggplot(cdata, aes(x = date, y = normalized_value)) +
+      # geom_line(color = "#FA5F70FF") +
+      geom_line(aes(color = dataset)) +
+      labs(title = "Normalized Country Data") +
+      new_retro(
+        legend.position = "bottom"
+      ) +
       theme(
         axis.title.y = element_blank(),
-        plot.background = element_rect(color = "#222D32", fill = "#222D32")
-      )
+        axis.text.y = element_blank(),
+        plot.background = element_rect(color = "#222D32", fill = "#222D32"),
+        legend.position = "bottom",
+        legend.box = "vertical",
+        legend.margin=margin()
+      ) +
+      guides(
+        color = guide_legend(
+          nrow = 5,
+          byrow = TRUE,
+        )
+      ) +
+      NULL
   })
 
   observeEvent(input$audioEnabled, {
