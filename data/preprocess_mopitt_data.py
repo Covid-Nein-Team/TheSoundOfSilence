@@ -15,7 +15,7 @@ from tqdm import tqdm
 # auxiliary geojson file.
 
 GEOJSON_FILE = '../resources/countries.geojson'
-OUT_FILE = 'mopitt_data.csv'
+OUT_FILE = 'co_data.csv'
 
 date_pattern = re.compile('(20\d{2})(\d{2})(\d{2})')
 
@@ -46,7 +46,7 @@ with open(GEOJSON_FILE) as geojson_file:
 
 # set up the list of all he5 files in the current directory
 he5_files = []
-for f in os.listdir("."):
+for f in os.listdir("mopitt_raw_data"):
     if f.endswith(".he5"):
         he5_files.append(f)
 he5_files.sort()
@@ -65,7 +65,7 @@ for he5_file in he5_files:
     country_to_value = {}
     country_to_count = {}
 
-    with h5py.File(he5_file, 'r') as f:
+    with h5py.File("mopitt_raw_data/" + he5_file, 'r') as f:
         # retrieve longitudes and latitudes for the grid
         lons = f['HDFEOS']['GRIDS']['MOP03']['Data Fields']['Longitude']
         lats = f['HDFEOS']['GRIDS']['MOP03']['Data Fields']['Latitude']

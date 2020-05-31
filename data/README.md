@@ -26,9 +26,10 @@ we used to pre-process the data.
     as provided by the [European Union][1].
 * `Global_Mobility_Report.csv` : The raw data file of the
     [Google COVID-19 Community Mobility Report][2]
-* `load_moppit_data.sh` : A script to load [MOPITT][3] measurements from NASA.
-* `mopitt_links.txt` : A file containing the links to load [MOPITT][3] data
-    from
+* `mopitt_raw_data/load_moppit_data.sh` : A script to load [MOPITT][3]
+    measurements from NASA.
+* `mopitt_raw_data/mopitt_links.txt` : A file containing the links to
+    load [MOPITT][3] data from NASA.
 * `preprocess_covid_data.py` : A Python3 script to transform the
     `covid_19_cases_raw.csv` file into the `covid_19_cases.csv` file.
 * `preprocess_google_data.py`: A Python3 script to transform the
