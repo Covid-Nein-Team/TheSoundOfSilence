@@ -14,16 +14,17 @@ In more detail, the following preprocessed data files are contained:
     daily life in percent versus baseline. Since six areas are added up,
     the minimum is -600. This data is provided by [Google][2].
 3. `co_data.csv`: Contains measurements of carbon monoxide (CO) in the
-    troposphere in exa-moles per cubic centimetre (i.e. 10^18) as reported by
+    troposphere in exa-moles (i.e. 10^18) per cubic centimetre as reported by
     [Measurements Of Pollution In The Troposphere (MOPITT)][3] by the Canadian
     Space Agency. The data is pre-processed to an average per country per day,
     using the geo-location data as contained in the
     `../resources/countries.geojson` file.
 4. `no2_data.csv`: Contains measurements of nitrogen dioxide (NO2) in the
-    troposphere in molecules per square centimetre as reported by the
-    [Ozone Monitoring Instrument (OMI)][4].  The data is pre-processed to
-    an average per country per eight days, using the geo-location data as
-    contained in the `../resources/countries.geojson` file.
+    troposphere in exa-molecules (i.e. 10^18) per square centimetre as
+    reported by the [Ozone Monitoring Instrument (OMI)][4]. The data is
+    pre-processed to an average per country per eight days, using the
+    geo-location data as contained in the `../resources/countries.geojson`
+    file.
 5. `evi_data.csv`: Contains measurements of the enhanced vegeatation index
     as reported by the [Suomi National Polar-orbiting Partnership][5] of
     NASA. The data is pre-processed to an average per country per day, using
