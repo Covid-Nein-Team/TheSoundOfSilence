@@ -33,6 +33,6 @@
     "browserify": "^16.2.2",
     "browserify-css": "^0.15.0",
     "uglifyify": "^5.0.1",
-    "watchify": "^3.11.1"
+    "watchify": "^4.0.0"
   }
 }
